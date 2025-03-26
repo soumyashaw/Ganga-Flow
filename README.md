@@ -1,4 +1,4 @@
-# GangaFlow 🚀
+# GangaFlow (Ongoing 🚧)
 
 **Your AI-powered gateway to mastering Ganga effortlessly.**
 
@@ -6,7 +6,7 @@ GangaFlow combines the power of LLMs with a smart Django-based backend and a Rea
 
 ---
 
-## 🧠 What is GangaFlow?
+## What is GangaFlow?
 
 GangaFlow is a GUI + LLM assistant that:
 - Translates user instructions into Ganga commands.
@@ -17,7 +17,7 @@ GangaFlow is a GUI + LLM assistant that:
 
 ---
 
-## ✨ Features
+## Features
 
 - 💬 **Conversational LLM agent (GangaFlow)**
 - 🖥️ **Embedded Ganga shell terminal view**
@@ -28,11 +28,11 @@ GangaFlow is a GUI + LLM assistant that:
 
 ---
 
-## 🖥️ Interface Overview
+## Interface Overview
 
 - **Left Pane**: Terminal running Ganga shell commands  
 - **Right Pane**: Chat interface powered by the LLM  
-![Frontend Sketch](./docs/interface_mockup.png)
+![Frontend Sketch](./docs/interface_mockup.jpeg)
 
 ---
 
@@ -48,8 +48,8 @@ cd ganga-flow
 ### 2. Backend Setup (Django)
 
 ```bash
-python -m venv venv
-source venv/bin/activate
+conda create --name ganga-env python=3.10
+conda activate ganga-env
 pip install -r requirements.txt
 
 python manage.py migrate
