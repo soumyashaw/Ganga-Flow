@@ -1,4 +1,4 @@
-![interface_mockup](https://github.com/user-attachments/assets/95b85447-640b-46a5-b133-e2eb70784c04)# GangaFlow (Ongoing 🚧)
+# GangaFlow (Ongoing 🚧)
 
 **Your AI-powered gateway to mastering Ganga effortlessly.**
 
