@@ -102,4 +102,4 @@ npm run dev
 Every contribution matters. Thank you for helping build a smarter, simpler way to interact with Ganga!
 
 —
-*Made with ❤️ by Sneha and the GangaFlow community*
+*Made with ❤️ by Soumya and the GangaFlow community*
