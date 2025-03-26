@@ -1,0 +1,11 @@
+ Project Idea: Ganga is a tool to compose, run and track computing jobs across a variety of backends and application types, primarily in CERN. However, the usage still is a mystery and slightly hard to master for the scientists. I have an efficient GUI and LLM-based solution that can solve and make the usage very simple.
+ 
+I would love to name it something related to ganga (please suggest names for the assistant as well), and it would have the following features:
+
+* It will have an LLM-agent to coordinate and manage all the tasks.
+* There will be a view of the terminal as well (on the left) and an LLM agent that interacts with the user directly to run all the tasks and assist the user with all the results (on the right).
+* The LLM will be finetuned to the ganga commands.
+* It will serve as the entrypoint to the Ganga shell.
+* It will be able to generate and execute codes directly on ganga shell (on the left).
+* It will be able to maintain chat memory for longer tasks and continuous chats.
+* The LLM can keep track of important environment variables in computer memory such as projectpath of user. 
