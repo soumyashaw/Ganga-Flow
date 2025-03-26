@@ -36,7 +36,7 @@ GangaFlow is a GUI + LLM assistant that:
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### 1. Clone the Repo
 
@@ -66,7 +66,7 @@ npm run dev
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 - [Architecture](./docs/architecture.md)
 - [Usage Guide](./docs/usage_guide.md)
@@ -74,7 +74,7 @@ npm run dev
 
 ---
 
-## 🧪 Examples
+## Examples
 
 Example scripts and JSON configs:
 - `examples/run_hello_world.yaml`
@@ -82,7 +82,7 @@ Example scripts and JSON configs:
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 - **Frontend**: React, TailwindCSS  
 - **Backend**: Django (Python)  
@@ -91,7 +91,7 @@ Example scripts and JSON configs:
 
 ---
 
-## 🔮 Future Plans
+## Future Plans
 
 - Streamlined onboarding flow for new users  
 - Ganga job graph visualizer  
@@ -101,16 +101,10 @@ Example scripts and JSON configs:
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Pull requests, feature suggestions, and bug reports are welcome!  
 See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
-
----
-
-## 📜 License
-
-MIT License
 
 ---
 
