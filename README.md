@@ -19,7 +19,7 @@ GangaFlow is a GUI + LLM assistant that:
 
 ## ✨ Features
 
-- 💬 **Conversational LLM agent (Gangabot)**
+- 💬 **Conversational LLM agent (GangaFlow)**
 - 🖥️ **Embedded Ganga shell terminal view**
 - 🔁 **Continuous chat memory & variable tracking**
 - ⚙️ **Django backend managing LLM and job execution**
@@ -87,7 +87,7 @@ Example scripts and JSON configs:
 - **Frontend**: React, TailwindCSS  
 - **Backend**: Django (Python)  
 - **Shell Integration**: Subprocess, Ganga APIs  
-- **LLM**: Fine-tuned GPT-based model  
+- **LLM**: Fine-tuned LLM model  
 
 ---
 
@@ -114,4 +114,4 @@ MIT License
 
 ---
 
-Made with ❤️ by Sneha Chetani
+Made with ❤️ by Soumya Shaw
