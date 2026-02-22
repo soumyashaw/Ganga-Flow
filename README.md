@@ -56,13 +56,23 @@ python manage.py migrate
 python manage.py runserver
 ```
 
-### 3. Frontend Setup (React)
+### 3. Frontend Setup (React + Vite)
 
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
+
+The dev server starts at **http://localhost:3000** (or the next available port if 3000 is in use — check the terminal output).
+
+To build for production:
+
+```bash
+npm run build
+```
+
+> **Note:** The frontend proxies `/api` and `/ws` requests to `http://localhost:8000` (Django). Start the Django backend first for full functionality.
 
 ---
 
@@ -84,7 +94,7 @@ Example scripts and JSON configs:
 
 ## Tech Stack
 
-- **Frontend**: React, TailwindCSS  
+- **Frontend**: React 18, Vite, lucide-react (CSS variables, no Tailwind)  
 - **Backend**: Django (Python)  
 - **Shell Integration**: Subprocess, Ganga APIs  
 - **LLM**: Fine-tuned LLM model  
