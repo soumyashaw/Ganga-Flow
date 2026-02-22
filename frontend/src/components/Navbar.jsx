@@ -1,10 +1,21 @@
+import { useState, useEffect } from 'react'
 import { Terminal as TerminalIcon, Wifi, WifiOff } from 'lucide-react'
 import './Navbar.css'
 
 export default function Navbar() {
-  // Static indicators for now — wired up to real state later
-  const gangaConnected = false
-  const llmConnected   = false
+  const [gangaConnected, setGangaConnected] = useState(false)
+  const [llmConnected,   setLlmConnected]   = useState(false)
+
+  useEffect(() => {
+    const onTerminal = (e) => setGangaConnected(e.detail.connected)
+    const onLlm      = (e) => setLlmConnected(e.detail.connected)
+    window.addEventListener('gangaflow:terminal-status', onTerminal)
+    window.addEventListener('gangaflow:llm-status',      onLlm)
+    return () => {
+      window.removeEventListener('gangaflow:terminal-status', onTerminal)
+      window.removeEventListener('gangaflow:llm-status',      onLlm)
+    }
+  }, [])
 
   return (
     <header className="navbar">

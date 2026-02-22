@@ -98,6 +98,30 @@ export default function Terminal() {
     return () => { wsRef.current?.close() }
   }, [connect])
 
+  // Broadcast WS status to Navbar
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('gangaflow:terminal-status', {
+      detail: { connected: status === STATUS.CONNECTED },
+    }))
+  }, [status])
+
+  // ── Run-code events from Chat pane ───────────────────────────────────────────
+  useEffect(() => {
+    const handler = (evt) => {
+      const ws = wsRef.current
+      if (!ws || ws.readyState !== WebSocket.OPEN) {
+        appendLine('error', 'Terminal not connected — cannot run code.')
+        return
+      }
+      const lines = evt.detail.code.split('\n')
+      lines.forEach(line => ws.send(line + '\r'))
+      // Send a blank line to close any open Python block
+      ws.send('\r')
+    }
+    window.addEventListener('gangaflow:run-code', handler)
+    return () => window.removeEventListener('gangaflow:run-code', handler)
+  }, [appendLine])
+
   // ── Input handling ───────────────────────────────────────────────────────────
   const handleSubmit = (e) => {
     e.preventDefault()

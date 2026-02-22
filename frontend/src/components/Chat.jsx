@@ -1,21 +1,25 @@
 import { useState, useRef, useEffect } from 'react'
-import { Bot, User, Copy, Check, Terminal, Send, Trash2, Maximize2, Minimize2 } from 'lucide-react'
+import ReactMarkdown from 'react-markdown'
+import { Bot, User, Copy, Check, Terminal, Send, Trash2, Maximize2, Minimize2, AlertCircle, Play } from 'lucide-react'
 import './Chat.css'
 
-// ── Boot message shown on load ────────────────────────────────────────────────
-const INITIAL_MESSAGES = [
-  {
-    id: 1,
-    role: 'assistant',
-    text: "Hello! I'm **GangaBot**, your AI assistant for Ganga — CERN's job management framework.\n\nAsk me anything about Ganga or describe the job you want to run, and I'll generate the commands for you.",
-    timestamp: new Date(),
-  },
-]
+const API_URL = 'http://localhost:8000/api/chat/'
+
+// ── Boot message ──────────────────────────────────────────────────────────────
+const bootMessage = () => ({
+  id: 1,
+  role: 'assistant',
+  text: "Hello! I'm **GangaBot**, your AI assistant for Ganga — CERN's job management framework.\n\nAsk me anything about Ganga or describe the job you want to run, and I'll generate the commands for you.",
+  timestamp: new Date(),
+})
 
 export default function Chat() {
-  const [messages,   setMessages]   = useState(INITIAL_MESSAGES)
-  const [input,      setInput]      = useState('')
-  const [maximised,  setMaximised]  = useState(false)
+  const [messages,  setMessages]  = useState([bootMessage()])
+  const [input,     setInput]     = useState('')
+  const [loading,   setLoading]   = useState(false)
+  const [error,     setError]     = useState(null)
+  const [sessionId, setSessionId] = useState(() => localStorage.getItem('gangaflow_session_id'))
+  const [maximised, setMaximised] = useState(false)
 
   const messagesEndRef = useRef(null)
   const textareaRef    = useRef(null)
@@ -33,40 +37,86 @@ export default function Chat() {
     ta.style.height = Math.min(ta.scrollHeight, 160) + 'px'
   }, [input])
 
-  const handleSubmit = (e) => {
+  // Load history from DB on mount if a session already exists
+  useEffect(() => {
+    if (!sessionId) return
+    fetch(`http://localhost:8000/api/chat/${sessionId}/history/`)
+      .then(r => r.ok ? r.json() : null)
+      .then(data => {
+        if (!data || !data.messages.length) return
+        const loaded = data.messages.map((m, i) => ({
+          id: i + 10,
+          role: m.role,
+          text: m.content,
+          timestamp: new Date(m.timestamp),
+        }))
+        setMessages([bootMessage(), ...loaded])
+      })
+      .catch(() => {})   // silently ignore if server not up yet
+  }, [])   // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Send message to backend ──────────────────────────────────────────────────
+  const handleSubmit = async (e) => {
     e?.preventDefault()
     const text = input.trim()
-    if (!text) return
+    if (!text || loading) return
 
-    const userMsg = {
-      id: Date.now(),
-      role: 'user',
-      text,
-      timestamp: new Date(),
-    }
+    setError(null)
 
-    const pendingMsg = {
-      id: Date.now() + 1,
-      role: 'assistant',
-      text: '…',
-      pending: true,
-      timestamp: new Date(),
-    }
-
-    setMessages(prev => [...prev, userMsg, pendingMsg])
+    // Optimistically add user message + pending bot bubble
+    const userMsg = { id: Date.now(),     role: 'user',      text, timestamp: new Date() }
+    const pending = { id: Date.now() + 1, role: 'assistant', text: '…', pending: true, timestamp: new Date() }
+    setMessages(prev => [...prev, userMsg, pending])
     setInput('')
+    setLoading(true)
+
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: text, session_id: sessionId }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        throw new Error(data.error || `Server error ${res.status}`)
+      }
+
+      // Persist session ID in localStorage for page refreshes
+      if (data.session_id && data.session_id !== sessionId) {
+        setSessionId(data.session_id)
+        localStorage.setItem('gangaflow_session_id', data.session_id)
+      }
+
+      // Replace the pending bubble with the real reply
+      setMessages(prev => prev.map(m =>
+        m.pending ? { ...m, text: data.reply, pending: false } : m
+      ))
+      window.dispatchEvent(new CustomEvent('gangaflow:llm-status', { detail: { connected: true } }))
+    } catch (err) {
+      setError(err.message)
+      // Remove the pending bubble on error
+      setMessages(prev => prev.filter(m => !m.pending))
+      window.dispatchEvent(new CustomEvent('gangaflow:llm-status', { detail: { connected: false } }))
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleKeyDown = (e) => {
-    // Submit on Enter (without Shift)
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSubmit()
     }
   }
 
+  // Clear chat and start a brand-new session
   const handleClear = () => {
-    setMessages([])
+    setMessages([bootMessage()])
+    setSessionId(null)
+    setError(null)
+    localStorage.removeItem('gangaflow_session_id')
   }
 
   return (
@@ -79,9 +129,14 @@ export default function Chat() {
           </div>
           <span className="pane-header-title">GangaBot</span>
           <span className="chat-model-badge">GPT-OSS-120b</span>
+          {sessionId && (
+            <span className="session-badge" title={`Session: ${sessionId}`}>
+              session active
+            </span>
+          )}
         </div>
         <div className="pane-header-right">
-          <button className="header-btn" onClick={handleClear} title="Clear chat">
+          <button className="header-btn" onClick={handleClear} title="New session">
             <Trash2 size={13} />
           </button>
           <button
@@ -99,6 +154,12 @@ export default function Chat() {
         {messages.map(msg => (
           <ChatMessage key={msg.id} message={msg} />
         ))}
+        {error && (
+          <div className="chat-error">
+            <AlertCircle size={13} />
+            <span>{error}</span>
+          </div>
+        )}
         <div ref={messagesEndRef} />
       </div>
 
@@ -111,14 +172,15 @@ export default function Chat() {
             value={input}
             onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask GangaBot… (Shift+Enter for new line)"
+            placeholder={loading ? 'GangaBot is thinking…' : 'Ask GangaBot… (Shift+Enter for new line)'}
             rows={1}
             spellCheck={false}
+            disabled={loading}
           />
           <button
             type="submit"
-            className={`send-btn ${input.trim() ? 'active' : ''}`}
-            disabled={!input.trim()}
+            className={`send-btn ${input.trim() && !loading ? 'active' : ''}`}
+            disabled={!input.trim() || loading}
             title="Send (Enter)"
           >
             <Send size={15} strokeWidth={2.5} />
@@ -128,6 +190,52 @@ export default function Chat() {
           GangaBot can write and execute Ganga code directly in the terminal.
         </p>
       </div>
+    </div>
+  )
+}
+
+// ── Fenced code block with Copy + Run buttons ───────────────────────────────
+function CodeBlock({ code }) {
+  const [copied, setCopied] = useState(false)
+  const [ran,    setRan]    = useState(false)
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code).then(() => {
+      setCopied(true)
+      setTimeout(() => setCopied(false), 1500)
+    })
+  }
+
+  const handleRun = () => {
+    window.dispatchEvent(new CustomEvent('gangaflow:run-code', { detail: { code } }))
+    setRan(true)
+    setTimeout(() => setRan(false), 1500)
+  }
+
+  return (
+    <div className="msg-code-block">
+      <div className="msg-code-header">
+        <Terminal size={11} />
+        <span>ganga</span>
+        <div className="code-block-actions">
+          <button
+            className={`code-action-btn code-run-btn${ran ? ' code-ran' : ''}`}
+            onClick={handleRun}
+            title="Run in terminal"
+          >
+            {ran ? <Check size={11} /> : <Play size={11} />}
+            <span>{ran ? 'Sent!' : 'Run'}</span>
+          </button>
+          <button
+            className={`code-action-btn code-copy-btn${copied ? ' code-copied' : ''}`}
+            onClick={handleCopy}
+            title="Copy code"
+          >
+            {copied ? <Check size={11} /> : <Copy size={11} />}
+          </button>
+        </div>
+      </div>
+      <pre><code>{code}</code></pre>
     </div>
   )
 }
@@ -145,41 +253,15 @@ function ChatMessage({ message }) {
     })
   }
 
-  // Render simple bold (**text**) and code blocks (```...```) in bot messages
-  const renderText = (text) => {
-    if (message.pending) {
-      return (
-        <span className="typing-indicator">
-          <span /><span /><span />
-        </span>
-      )
-    }
-    const parts = text.split(/(```[\s\S]*?```|\*\*[^*]+\*\*)/g)
-    return parts.map((part, i) => {
-      if (part.startsWith('```') && part.endsWith('```')) {
-        const code = part.slice(3, -3).replace(/^\n/, '')
-        return (
-          <div key={i} className="msg-code-block">
-            <div className="msg-code-header">
-              <Terminal size={11} />
-              <span>ganga</span>
-              <button
-                className="code-copy-btn"
-                onClick={() => navigator.clipboard.writeText(code)}
-                title="Copy code"
-              >
-                <Copy size={11} />
-              </button>
-            </div>
-            <pre><code>{code}</code></pre>
-          </div>
-        )
+  // Custom renderers passed to ReactMarkdown
+  const components = {
+    code({ node, inline, className, children, ...props }) {
+      const code = String(children).replace(/\n$/, '')
+      if (inline) {
+        return <code className="msg-inline-code" {...props}>{code}</code>
       }
-      if (part.startsWith('**') && part.endsWith('**')) {
-        return <strong key={i}>{part.slice(2, -2)}</strong>
-      }
-      return <span key={i}>{part}</span>
-    })
+      return <CodeBlock code={code} />
+    },
   }
 
   return (
@@ -194,7 +276,17 @@ function ChatMessage({ message }) {
       {/* Bubble */}
       <div className="msg-bubble-wrap">
         <div className={`msg-bubble ${isUser ? 'bubble-user' : 'bubble-bot'}`}>
-          <div className="msg-body">{renderText(message.text)}</div>
+          <div className="msg-body">
+            {message.pending ? (
+              <span className="typing-indicator">
+                <span /><span /><span />
+              </span>
+            ) : (
+              <ReactMarkdown components={components}>
+                {message.text}
+              </ReactMarkdown>
+            )}
+          </div>
         </div>
 
         {/* Meta row */}
