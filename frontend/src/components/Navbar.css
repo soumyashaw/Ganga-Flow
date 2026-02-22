@@ -1,0 +1,127 @@
+/* ─── Navbar ─────────────────────────────────────── */
+.navbar {
+  display: flex;
+  align-items: center;
+  height: var(--navbar-h);
+  padding: 0 16px;
+  background: var(--bg-navbar);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  gap: 12px;
+  user-select: none;
+}
+
+/* Left */
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 180px;
+}
+
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+}
+
+.navbar-logo-icon {
+  color: var(--accent);
+}
+
+.navbar-title {
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--text-primary);
+  letter-spacing: -0.3px;
+}
+
+.navbar-title-accent {
+  color: var(--accent);
+}
+
+.navbar-badge {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: #1a1a22;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Centre */
+.navbar-center {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  justify-content: center;
+}
+
+.status-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.status-pill.connected {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: #00d4aa44;
+}
+
+.status-pill.disconnected {
+  color: var(--text-muted);
+  background: #1a1a22;
+  border-color: var(--border);
+}
+
+.status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.status-dot.on {
+  background: var(--accent);
+  box-shadow: 0 0 4px var(--accent);
+  animation: pulse 2s infinite;
+}
+
+.status-dot.off {
+  background: var(--text-muted);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+
+/* Right */
+.navbar-right {
+  min-width: 180px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.navbar-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+  font-style: italic;
+}

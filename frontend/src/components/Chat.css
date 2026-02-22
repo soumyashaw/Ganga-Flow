@@ -1,0 +1,300 @@
+/* ─── Chat Pane ──────────────────────────────────── */
+.chat-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-chat);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.chat-pane.maximised {
+  position: fixed;
+  inset: calc(var(--navbar-h) + 10px) 10px 10px 10px;
+  z-index: 100;
+  flex: unset;
+}
+
+/* ─── Chat Header extras ─────────────────────────── */
+.chat-header {
+  background: var(--bg-header);
+  border-bottom: 1px solid var(--border);
+}
+
+.bot-avatar-small {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.chat-model-badge {
+  font-size: 10px;
+  color: var(--text-muted);
+  background: #1a1a22;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 1px 6px;
+}
+
+/* ─── Message List ───────────────────────────────── */
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* ─── Message Row ────────────────────────────────── */
+.chat-message {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  max-width: 100%;
+}
+
+.chat-message.user {
+  flex-direction: row-reverse;
+}
+
+/* ─── Avatars ────────────────────────────────────── */
+.msg-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.bot-avatar {
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+}
+
+.user-avatar {
+  background: #1d2f4a;
+  border: 1px solid #2a4a6a;
+  color: #82aaff;
+}
+
+/* ─── Bubble Wrapper ──────────────────────────────── */
+.msg-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: calc(100% - 40px);
+  gap: 3px;
+}
+
+.chat-message.user .msg-bubble-wrap {
+  align-items: flex-end;
+}
+
+/* ─── Bubble ─────────────────────────────────────── */
+.msg-bubble {
+  padding: 10px 14px;
+  border-radius: 12px;
+  line-height: 1.6;
+  font-size: 13.5px;
+  word-break: break-word;
+}
+
+.bubble-user {
+  background: var(--bg-msg-user);
+  color: #c5d8f5;
+  border: 1px solid #2a4a6a;
+  border-bottom-right-radius: 4px;
+}
+
+.bubble-bot {
+  background: var(--bg-msg-bot);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-bottom-left-radius: 4px;
+}
+
+/* ─── Inline Code Block ──────────────────────────── */
+.msg-code-block {
+  margin: 8px 0 2px;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+
+.msg-code-header {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  background: #0d0d0d;
+  color: var(--text-muted);
+  font-size: 11px;
+  border-bottom: 1px solid var(--border);
+}
+
+.msg-code-header span {
+  flex: 1;
+}
+
+.code-copy-btn {
+  background: none;
+  color: var(--text-muted);
+  padding: 2px;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+}
+.code-copy-btn:hover { color: var(--text-primary); }
+
+.msg-code-block pre {
+  margin: 0;
+  padding: 10px 12px;
+  background: #080b08;
+  overflow-x: auto;
+}
+
+.msg-code-block code {
+  color: var(--text-terminal);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* ─── Meta Row ───────────────────────────────────── */
+.msg-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px;
+}
+
+.meta-right { justify-content: flex-end; }
+.meta-left  { justify-content: flex-start; }
+
+.msg-time {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+
+.msg-copy-btn {
+  background: none;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  padding: 2px;
+  border-radius: 3px;
+  transition: color 0.15s;
+}
+.msg-copy-btn:hover { color: var(--text-secondary); }
+
+/* ─── Typing Indicator ───────────────────────────── */
+.typing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+}
+
+.typing-indicator span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  animation: bounce 1.2s infinite ease-in-out;
+}
+
+.typing-indicator span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+  40%            { transform: scale(1.0); opacity: 1;   }
+}
+
+/* ─── Input Area ──────────────────────────────────── */
+.chat-input-area {
+  padding: 10px 12px 8px;
+  background: var(--bg-header);
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.chat-input-form {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius);
+  padding: 8px 10px;
+  transition: border-color 0.2s;
+}
+
+.chat-input-form:focus-within {
+  border-color: var(--border-focus);
+}
+
+.chat-input {
+  flex: 1;
+  font-size: 13.5px;
+  color: var(--text-primary);
+  background: none;
+  resize: none;
+  line-height: 1.5;
+  max-height: 160px;
+  caret-color: var(--accent);
+  font-family: 'Inter', sans-serif;
+}
+
+.chat-input::placeholder {
+  color: var(--text-muted);
+}
+
+.send-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: var(--border);
+  color: var(--text-muted);
+  flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
+}
+
+.send-btn.active {
+  background: var(--accent);
+  color: #000;
+}
+
+.send-btn.active:hover {
+  background: var(--accent-hover);
+}
+
+.send-btn:disabled {
+  cursor: not-allowed;
+}
+
+.chat-hint {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  text-align: center;
+  margin-top: 5px;
+}

@@ -1,0 +1,99 @@
+/* ─── CSS Variables ─────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-app:        #0c0c0f;
+  --bg-navbar:     #111116;
+  --bg-pane:       #0f0f14;
+  --bg-terminal:   #080b08;
+  --bg-chat:       #0f0f14;
+  --bg-input:      #1a1a22;
+  --bg-msg-user:   #1d3557;
+  --bg-msg-bot:    #16161e;
+  --bg-header:     #13131a;
+
+  /* Borders */
+  --border:        #2a2a3a;
+  --border-focus:  #00d4aa;
+
+  /* Text */
+  --text-primary:  #e8e8f0;
+  --text-secondary:#8888a8;
+  --text-muted:    #55556a;
+  --text-terminal: #00e676;
+  --text-prompt:   #00d4aa;
+  --text-error:    #ff5370;
+  --text-warning:  #ffcb6b;
+  --text-info:     #82aaff;
+
+  /* Accent */
+  --accent:        #00d4aa;
+  --accent-dim:    #00d4aa22;
+  --accent-hover:  #00f0c4;
+
+  /* Scrollbar */
+  --scrollbar-track: #0f0f14;
+  --scrollbar-thumb: #2a2a3a;
+
+  /* Sizing */
+  --navbar-h:      48px;
+  --border-radius: 8px;
+}
+
+/* ─── Reset & Base ──────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg-app);
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── Scrollbar ─────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3a3a50;
+}
+
+/* ─── Selection ─────────────────────────────────── */
+::selection {
+  background: var(--accent-dim);
+  color: var(--accent);
+}
+
+/* ─── Inputs / Buttons base ─────────────────────── */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+input, textarea {
+  font-family: inherit;
+  outline: none;
+  border: none;
+  background: none;
+}
