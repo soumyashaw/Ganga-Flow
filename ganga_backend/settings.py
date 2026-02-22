@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "channels",
     "assistant",
 ]
 
@@ -69,6 +70,20 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "ganga_backend.wsgi.application"
+ASGI_APPLICATION  = "ganga_backend.asgi.application"
+
+# Channel layer — in-memory for development
+# Switch to channels_redis for production
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    }
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://localhost:3001",
+]
 
 
 # Database

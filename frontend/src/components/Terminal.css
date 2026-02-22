@@ -44,6 +44,44 @@
   color: var(--text-terminal);
 }
 
+/* ─── WebSocket status badge ──────────────────────── */
+.ws-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  font-size: 10px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  text-transform: lowercase;
+}
+
+.ws-status-badge.status-connected {
+  color: var(--accent);
+  background: var(--accent-dim);
+  border-color: #00d4aa44;
+}
+
+.ws-status-badge.status-connecting {
+  color: var(--text-warning);
+  background: #ffcb6b11;
+  border-color: #ffcb6b33;
+}
+
+.ws-status-badge.status-disconnected,
+.ws-status-badge.status-error {
+  color: var(--text-muted);
+  background: #1a1a22;
+  border-color: var(--border);
+}
+
+.ws-status-badge.status-error {
+  color: var(--text-error);
+  background: #ff537011;
+  border-color: #ff537033;
+}
+
 /* ─── Output Area ────────────────────────────────── */
 .terminal-output {
   flex: 1;
