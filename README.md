@@ -22,7 +22,7 @@ GangaFlow is a GUI + LLM assistant that:
 |-----------|------------|
 | **Ganga Shell** — real PTY terminal over WebSocket | **GangaBot** — LLM chat with Markdown rendering |
 
-![Frontend Sketch](./docs/interface_mockup.jpeg)
+![Frontend Sketch](./docs/interface.png)
 
 ---
 
@@ -162,4 +162,5 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 ---
 
 Made with ❤️ by Soumya Shaw
+.venv/bin/daphne -p 8000 ganga_backend.asgi:application
 cd frontend && npm run dev
