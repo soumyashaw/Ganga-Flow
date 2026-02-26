@@ -4,6 +4,9 @@ import re
 
 import ptyprocess
 from channels.generic.websocket import AsyncWebsocketConsumer
+from dotenv import load_dotenv
+
+load_dotenv()  # ensure .env is loaded when the consumer module is imported
 
 # Strip ANSI escape sequences before sending to the browser
 _ANSI_RE = re.compile(r'\x1B\[[0-?]*[ -/]*[@-~]|\x1B[()][AB012]|\x1B=|\x1B>')
@@ -13,9 +16,10 @@ def _strip_ansi(text: str) -> str:
     return _ANSI_RE.sub('', text)
 
 
-# ── Shell to launch ───────────────────────────────────────────────────────────
-# Change to 'ganga' once Ganga is installed in the environment.
-SHELL = os.environ.get('GANGAFLOW_SHELL', 'bash')
+# ── Shell to launch ────────────────────────────────────────────────────────────────
+# Set GANGAFLOW_SHELL in .env to launch a different shell, e.g.:
+#   GANGAFLOW_SHELL=/path/to/.venv/bin/ganga
+DEFAULT_SHELL = 'bash'
 
 
 class TerminalConsumer(AsyncWebsocketConsumer):
@@ -31,10 +35,13 @@ class TerminalConsumer(AsyncWebsocketConsumer):
         self.running = False
         self._pty = None
 
+        # Read shell at connection time so .env changes apply after a server restart
+        shell = os.environ.get('GANGAFLOW_SHELL', DEFAULT_SHELL)
+
         try:
             # Spawn the shell inside a PTY
             self._pty = ptyprocess.PtyProcess.spawn(
-                [SHELL],
+                [shell],
                 dimensions=(24, 140),   # rows × cols
             )
             self.running = True
@@ -47,7 +54,7 @@ class TerminalConsumer(AsyncWebsocketConsumer):
         asyncio.ensure_future(self._read_loop())
 
         await self.send(
-            text_data=f'[GangaFlow] Shell started ({SHELL}). '
+            text_data=f'[GangaFlow] Shell started ({shell}). '
                        'Type commands below or ask GangaBot.\r\n'
         )
 

@@ -128,6 +128,15 @@ export default function Terminal() {
     const cmd = input.trim()
     if (!cmd) return
 
+    // Handle clear locally — PTY clear output is stripped by the ANSI filter
+    if (cmd === 'clear' || cmd === 'cls') {
+      handleClear()
+      setHistory(prev => [cmd, ...prev])
+      setHistIdx(-1)
+      setInput('')
+      return
+    }
+
     if (status !== STATUS.CONNECTED || !wsRef.current) {
       appendLine('error', 'Not connected. Click reconnect (↺).')
       return
